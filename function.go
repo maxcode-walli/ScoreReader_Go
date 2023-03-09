@@ -3,6 +3,7 @@ package p
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 )
 
@@ -15,5 +16,14 @@ type PubSubMessage struct {
 // HelloPubSub consumes a Pub/Sub message.
 func HelloPubSub(ctx context.Context, m PubSubMessage) error {
 	log.Println(string(m.Data))
+	var person Person
+	//event := m.ToPigeonEvent()
+	_ = json.Unmarshal(m.Data, &person)
+
+	if person.Name == "Ana" {
+		log.Println("Hi Alex")
+	} else {
+		log.Println("Hi, person")
+	}
 	return nil
 }
