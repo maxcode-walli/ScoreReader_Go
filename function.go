@@ -60,9 +60,10 @@ func HelloPubSub(ctx context.Context, m PubSubMessage) error {
 
 				person.Email = "notyo@busine.ss"
 
-				ref := accDoc.Ref.Collection("transactions").Doc("3VhE9swaBIui8Gui14aG")
+				ref := accDoc.Ref.Collection("transactions").Doc("abcdefabcdef")
 
 				return transaction.Create(ref, &person)
+
 			})
 			if err != nil {
 				log.Panic(err, "firestore.saveTransaction")
