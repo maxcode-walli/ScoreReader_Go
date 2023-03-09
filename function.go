@@ -21,7 +21,7 @@ func HelloPubSub(ctx context.Context, m PubSubMessage) error {
 	_ = json.Unmarshal(m.Data, &person)
 
 	if person.Name == "Ana" {
-		log.Println("Hi Alex")
+		log.Println("Hi Ana")
 	} else {
 		log.Println("Hi, person")
 	}
