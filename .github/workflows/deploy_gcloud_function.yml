@@ -22,10 +22,4 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v1'
     - name: 'Deploy function'
       run: |
-        gcloud functions deploy ScoreReader_Go 
-        --runtime go119 --memory 128MB --trigger-topic TransactionScores 
-        --region europe-west3 --max-instances 1 --project impactful-shard-374913 
-        --service-account backend-functions@impactful-shard-374913.iam.gserviceaccount.com 
-        --allow-unauthenticated --entry-point HelloPubSub
-          
-        
+        gcloud functions deploy ScoreReader_Go --runtime go119 --memory 128MB --trigger-topic TransactionScores --region europe-west3 --max-instances 1 --project impactful-shard-374913 --service-account backend-functions@impactful-shard-374913.iam.gserviceaccount.com --allow-unauthenticated --entry-point HelloPubSub
