@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go/v4"
@@ -24,15 +25,10 @@ type PubSubMessage struct {
 // HelloPubSub consumes a Pub/Sub message.
 func HelloPubSub(ctx context.Context, m PubSubMessage) error {
 	log.Println(string(m.Data))
-	var person Person
-	//event := m.ToPigeonEvent()
-	_ = json.Unmarshal(m.Data, &person)
+	var transactionScore TransactionScore
 
-	if person.Name == "Ana" {
-		log.Println("Hi Ana")
-	} else {
-		log.Println("Hi, person")
-	}
+	//event := m.ToPigeonEvent()
+	_ = json.Unmarshal(m.Data, &transactionScore)
 
 	app, err := firebase.NewApp(ctx, &firebase.Config{ProjectID: "impactful-shard-374913"})
 
@@ -45,25 +41,36 @@ func HelloPubSub(ctx context.Context, m PubSubMessage) error {
 			log.Panic(err)
 		} else {
 
-			err := client.RunTransaction(ctx, func(ctx context.Context, transaction *firestore.Transaction) error { //HERE TO DO
+			err := client.RunTransaction(ctx, func(ctx context.Context, transaction *firestore.Transaction) error {
 
-				accIter := client.Collection("users").
-					Doc("K7F5Tgiucxa2NInzs3TIBe3lhyi2").
+				accIter := client.Collection("users").Doc(transactionScore.UserID).
 					Collection("accounts").
-					Where("iban", "==", "NL02ABNA0123456789").
+					Where("externalAccountId", "==", transactionScore.ExternalAccountId).
 					Documents(ctx)
 
 				accDoc, err := accIter.Next()
 				if err != nil {
-					fmt.Printf("error reading firestore account info")
+					fmt.Printf("error reading firestore account")
+				}
+				ref := accDoc.Ref.Collection("transactions").Doc(transactionScore.TransactionID)
+
+				if strings.Contains(transactionScore.Label, "risk") {
+					var updates []firestore.Update
+					updates = append(updates, firestore.Update{
+						Path:  "IsAnomaly",
+						Value: true,
+					})
+					transaction.Update(ref, updates)
+				} else if strings.Contains(transactionScore.Label, "legit") {
+					var updates []firestore.Update
+					updates = append(updates, firestore.Update{
+						Path:  "IsAnomaly",
+						Value: false,
+					})
+					transaction.Update(ref, updates)
 				}
 
-				person.Email = "notyo@busine.ss"
-
-				ref := accDoc.Ref.Collection("transactions").Doc("abcdefabcdef")
-
-				return transaction.Create(ref, &person)
-
+				return nil
 			})
 			if err != nil {
 				log.Panic(err, "firestore.saveTransaction")

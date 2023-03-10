@@ -1,6 +1,9 @@
 package p
 
-type Person struct {
-	Email string `json:"email,omitempty"`
-	Name  string `json:"name,omitempty"`
+type TransactionScore struct {
+	UserID            string `json:"userId,omitempty"`
+	ExternalAccountId string `json:"externalAccountID,omitempty"`
+	TransactionID     string `json:"transactionID,omitempty"`
+	Label             string `json:"label,omitempty"`
+	Score             string `json:"score,omitempty"`
 }
