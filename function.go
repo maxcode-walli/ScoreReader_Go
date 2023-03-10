@@ -50,7 +50,7 @@ func HelloPubSub(ctx context.Context, m PubSubMessage) error {
 
 				accDoc, err := accIter.Next()
 				if err != nil {
-					log.Panic(fmt.Sprintf("no user found with external id: %s", transactionScore.ExternalAccountId))
+					log.Panic(fmt.Sprintf("no user found with externalAccountId: %s", transactionScore.ExternalAccountId))
 				}
 				ref := accDoc.Ref.Collection("transactions").Doc(transactionScore.TransactionID)
 
