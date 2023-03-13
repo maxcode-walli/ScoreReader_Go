@@ -57,14 +57,14 @@ func HelloPubSub(ctx context.Context, m PubSubMessage) error {
 				if strings.Contains(transactionScore.Label, "risk") {
 					var updates []firestore.Update
 					updates = append(updates, firestore.Update{
-						Path:  "IsAnomaly",
+						Path:  "isAnomaly",
 						Value: true,
 					})
 					transaction.Update(ref, updates)
 				} else if strings.Contains(transactionScore.Label, "legit") {
 					var updates []firestore.Update
 					updates = append(updates, firestore.Update{
-						Path:  "IsAnomaly",
+						Path:  "isAnomaly",
 						Value: false,
 					})
 					transaction.Update(ref, updates)
